@@ -20,34 +20,34 @@
 ### DB-01. PostgreSQL 17 로컬 환경 구성
 - **수행 작업**: PostgreSQL 17 설치/실행 확인, `my_todolist` 데이터베이스 생성, 접속 계정 준비.
 - **완료 조건**
-  - [ ] `psql`로 PostgreSQL 17 버전 접속 확인
-  - [ ] `my_todolist` 데이터베이스 생성 완료
-  - [ ] 애플리케이션 접속용 계정/권한(CONNECT, CRUD) 부여 완료
+  - [x] `psql`로 PostgreSQL 17 버전 접속 확인 (psql 미설치로 postgresql-mcp로 대체 검증: `PostgreSQL 17.11` 확인)
+  - [x] `my_todolist` 데이터베이스 생성 완료
+  - [x] 애플리케이션 접속용 계정/권한(CONNECT, CRUD) 부여 완료 (`postgres` 계정에 `GRANT ALL PRIVILEGES ON DATABASE my_todolist` 적용, 접속·쿼리 확인)
 - **선행 Task**: 없음
 
 ### DB-02. 스키마 적용 (schema.sql 실행)
 - **수행 작업**: `docs/schema.sql`을 대상 DB에 실행하여 `users`, `categories`, `todos` 테이블·제약·인덱스를 생성.
 - **완료 조건**
-  - [ ] `schema.sql` 실행 오류 없이 완료
-  - [ ] `users`, `categories`, `todos` 3개 테이블 존재 확인 (`\dt`)
-  - [ ] FK 제약(`categories.user_id`, `todos.user_id`, `todos.category_id`) 및 `CHECK(start_date <= end_date)` 적용 확인
-  - [ ] `UNIQUE(email)`, `UNIQUE(categories.user_id, name)` 제약 적용 확인
-  - [ ] 인덱스(`idx_categories_user_id`, `idx_todos_user_id`, `idx_todos_category_id`) 생성 확인
+  - [x] `schema.sql` 실행 오류 없이 완료 (`my_todolist` DB에 적용)
+  - [x] `users`, `categories`, `todos` 3개 테이블 존재 확인 (`information_schema.tables` 조회로 대체 확인, psql 미설치)
+  - [x] FK 제약(`categories.user_id`, `todos.user_id`, `todos.category_id`) 및 `CHECK(start_date <= end_date)` 적용 확인
+  - [x] `UNIQUE(email)`, `UNIQUE(categories.user_id, name)` 제약 적용 확인
+  - [x] 인덱스(`idx_categories_user_id`, `idx_todos_user_id`, `idx_todos_category_id`) 생성 확인
 - **선행 Task**: DB-01
 
 ### DB-03. 접속 정보/환경변수 정리
 - **수행 작업**: 백엔드에서 사용할 `DATABASE_URL`을 확정하고 `.env.example`에 반영(값 자체는 미포함).
 - **완료 조건**
-  - [ ] `DATABASE_URL` 형식(호스트/포트/DB명/계정) 확정
-  - [ ] `.env.example`에 `DATABASE_URL` 키 추가(값은 placeholder)
+  - [x] `DATABASE_URL` 형식(호스트/포트/DB명/계정) 확정 (`postgresql://{user}:{password}@localhost:5432/my_todolist`)
+  - [x] `.env.example`에 `DATABASE_URL` 키 추가(값은 placeholder)
 - **선행 Task**: DB-01
 
 ### DB-04. 제약 조건 수동 검증
 - **수행 작업**: 핵심 제약(중복 이메일, 카테고리 이름 중복, start_date>end_date)이 DB 레벨에서 실제로 거부되는지 SQL로 직접 검증.
 - **완료 조건**
-  - [ ] 중복 이메일 INSERT 시 UNIQUE 위반 에러 확인
-  - [ ] 동일 사용자 내 중복 카테고리 이름 INSERT 시 UNIQUE 위반 에러 확인
-  - [ ] `start_date > end_date`로 INSERT 시 CHECK 위반 에러 확인
+  - [x] 중복 이메일 INSERT 시 UNIQUE 위반 에러 확인 (`users_email_key`)
+  - [x] 동일 사용자 내 중복 카테고리 이름 INSERT 시 UNIQUE 위반 에러 확인 (`categories_user_id_name_key`)
+  - [x] `start_date > end_date`로 INSERT 시 CHECK 위반 에러 확인 (`todos_check`), 테스트 데이터는 검증 후 삭제 완료
 - **선행 Task**: DB-02
 
 ---
