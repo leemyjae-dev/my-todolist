@@ -1,0 +1,107 @@
+<svg width="1180" height="760" viewBox="0 0 1180 760" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard, -apple-system, 'Malgun Gothic', sans-serif">
+  <!-- 배경 -->
+  <rect x="0" y="0" width="1180" height="760" fill="#F5F7FA"/>
+
+  <!-- 헤더 (color-navy) -->
+  <rect x="0" y="0" width="1180" height="56" fill="#0B1E3F"/>
+  <text x="24" y="34" fill="#FFFFFF" font-size="18" font-weight="700">my-todoList</text>
+  <text x="1010" y="34" fill="#FFFFFF" font-size="14" font-weight="600">내 정보</text>
+  <text x="1094" y="34" fill="#FFFFFF" font-size="14" font-weight="600">로그아웃</text>
+
+  <!-- 좌측 사이드바 (카테고리) -->
+  <rect x="0" y="56" width="240" height="704" fill="#FFFFFF" stroke="#DDE2EA" stroke-width="1"/>
+  <text x="24" y="96" fill="#1A1F2B" font-size="17" font-weight="600">카테고리</text>
+
+  <!-- 카테고리: 전체 (선택됨) -->
+  <rect x="16" y="116" width="208" height="36" rx="8" fill="#E8F0FE"/>
+  <circle cx="34" cy="134" r="5" fill="#0B5CD7"/>
+  <text x="48" y="139" fill="#0B5CD7" font-size="15" font-weight="600">전체</text>
+
+  <!-- 카테고리: 기본 -->
+  <circle cx="34" cy="178" r="5" fill="none" stroke="#5B6472" stroke-width="1.5"/>
+  <text x="48" y="183" fill="#1A1F2B" font-size="15">기본</text>
+
+  <!-- 카테고리: 업무 -->
+  <circle cx="34" cy="214" r="5" fill="none" stroke="#5B6472" stroke-width="1.5"/>
+  <text x="48" y="219" fill="#1A1F2B" font-size="15">업무</text>
+
+  <!-- 카테고리: 개인 -->
+  <circle cx="34" cy="250" r="5" fill="none" stroke="#5B6472" stroke-width="1.5"/>
+  <text x="48" y="255" fill="#1A1F2B" font-size="15">개인</text>
+
+  <text x="24" y="304" fill="#0B5CD7" font-size="14" font-weight="600">카테고리 관리 &gt;</text>
+
+  <!-- 우측 본문 -->
+  <!-- 상태 필터 탭 -->
+  <rect x="264" y="80" width="60" height="32" rx="16" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="280" y="101" fill="#5B6472" font-size="13" font-weight="600">전체</text>
+
+  <rect x="332" y="80" width="70" height="32" rx="16" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="348" y="101" fill="#5B6472" font-size="13" font-weight="600">시작전</text>
+
+  <rect x="410" y="80" width="70" height="32" rx="16" fill="#0B5CD7"/>
+  <text x="424" y="101" fill="#FFFFFF" font-size="13" font-weight="600">진행중</text>
+
+  <rect x="488" y="80" width="60" height="32" rx="16" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="503" y="101" fill="#5B6472" font-size="13" font-weight="600">완료</text>
+
+  <rect x="556" y="80" width="60" height="32" rx="16" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="571" y="101" fill="#5B6472" font-size="13" font-weight="600">지연</text>
+
+  <!-- 할일 추가 버튼 (Primary) -->
+  <rect x="1032" y="78" width="124" height="36" rx="10" fill="#0B5CD7"/>
+  <text x="1056" y="101" fill="#FFFFFF" font-size="14" font-weight="600">+ 할일 추가</text>
+
+  <!-- 카드 1: 기획서 작성 (업무 / 진행중) -->
+  <rect x="264" y="132" width="892" height="92" rx="10" fill="#FFFFFF" stroke="#DDE2EA" stroke-width="1"/>
+  <text x="282" y="167" fill="#0B5CD7" font-size="16">◐</text>
+  <text x="308" y="166" fill="#1A1F2B" font-size="15" font-weight="600">기획서 작성</text>
+
+  <rect x="440" y="150" width="52" height="22" rx="6" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="452" y="165" fill="#5B6472" font-size="12">업무</text>
+
+  <rect x="500" y="150" width="58" height="22" rx="6" fill="#E8F0FE"/>
+  <text x="510" y="165" fill="#0B5CD7" font-size="12" font-weight="600">진행중</text>
+
+  <text x="308" y="196" fill="#5B6472" font-size="13">08/20 ~ 08/28</text>
+
+  <text x="1050" y="196" fill="#5B6472" font-size="13" font-weight="600">수정</text>
+  <text x="1100" y="196" fill="#D93A3A" font-size="13" font-weight="600">삭제</text>
+
+  <!-- 카드 2: 장보기 (기본 / 완료) -->
+  <rect x="264" y="240" width="892" height="92" rx="10" fill="#FFFFFF" stroke="#DDE2EA" stroke-width="1"/>
+  <text x="282" y="275" fill="#1F9254" font-size="16">●</text>
+  <text x="308" y="274" fill="#5B6472" font-size="15" font-weight="600" text-decoration="line-through">장보기</text>
+
+  <rect x="400" y="258" width="52" height="22" rx="6" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="412" y="273" fill="#5B6472" font-size="12">기본</text>
+
+  <rect x="460" y="258" width="52" height="22" rx="6" fill="#E6F6EC"/>
+  <text x="470" y="273" fill="#1F9254" font-size="12" font-weight="600">완료</text>
+
+  <text x="308" y="304" fill="#5B6472" font-size="13">08/24 ~ 08/24</text>
+
+  <text x="1050" y="304" fill="#5B6472" font-size="13" font-weight="600">수정</text>
+  <text x="1100" y="304" fill="#D93A3A" font-size="13" font-weight="600">삭제</text>
+
+  <!-- 카드 3: 리포트 제출 (업무 / 지연) -->
+  <rect x="264" y="348" width="892" height="92" rx="10" fill="#FFFFFF" stroke="#DDE2EA" stroke-width="1"/>
+  <text x="284" y="383" fill="#D93A3A" font-size="16" font-weight="700">!</text>
+  <text x="308" y="382" fill="#1A1F2B" font-size="15" font-weight="600">리포트 제출</text>
+
+  <rect x="440" y="366" width="52" height="22" rx="6" fill="#FFFFFF" stroke="#DDE2EA"/>
+  <text x="452" y="381" fill="#5B6472" font-size="12">업무</text>
+
+  <rect x="500" y="366" width="52" height="22" rx="6" fill="#FCEAEA"/>
+  <text x="511" y="381" fill="#D93A3A" font-size="12" font-weight="600">지연</text>
+
+  <text x="308" y="412" fill="#5B6472" font-size="13">08/10 ~ 08/20</text>
+
+  <text x="1050" y="412" fill="#5B6472" font-size="13" font-weight="600">수정</text>
+  <text x="1100" y="412" fill="#D93A3A" font-size="13" font-weight="600">삭제</text>
+
+  <!-- 페이지네이션 -->
+  <text x="620" y="480" fill="#5B6472" font-size="14">&lt; 이전</text>
+  <text x="700" y="480" fill="#1A1F2B" font-size="14" font-weight="600">1 / 3</text>
+  <text x="750" y="480" fill="#5B6472" font-size="14">다음 &gt;</text>
+</svg>

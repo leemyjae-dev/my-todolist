@@ -1,0 +1,64 @@
+.todo-filter {
+  padding: var(--space-4) 0;
+}
+
+.todo-filter__desktop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.todo-filter__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.todo-filter__manage-link {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.todo-filter__status-tabs {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.todo-filter__status-tabs button {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+
+.todo-filter__status-tabs button.is-active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.todo-filter__mobile {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.todo-filter__mobile select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+}
+
+@media (max-width: 1023px) {
+  .todo-filter__desktop {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .todo-filter__mobile {
+    display: none;
+  }
+}

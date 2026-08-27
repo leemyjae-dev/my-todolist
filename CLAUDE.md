@@ -75,6 +75,7 @@ my-todoList 프로젝트 작업 시 아래 문서를 우선 참고한다.
 | ERD | `docs/7-erd.md` | users/categories/todos 3개 테이블 관계, 컬럼/타입/제약, 인덱스 정의 |
 | DB 스키마(DDL) | `docs/schema.sql` | ERD 기반 PostgreSQL 17 `CREATE TABLE` 문 (FK, UNIQUE, CHECK, 인덱스 포함) |
 | 실행 계획(WBS) | `docs/8-plan.md` | DB/백엔드/프론트엔드 Task 단위 작업 계획, Task별 수행 작업·완료 조건(체크박스)·선행 Task |
+| 스타일 가이드 | `docs/9-style.md` | 컬러 팔레트(할일 상태 4종 포함), 타이포그래피, 여백/그리드, 버튼·입력필드·카드·모달·배지 컴포넌트 스타일 |
 | API 스펙 | `backend/swagger.json` | OpenAPI 3.1 스펙. auth/users/categories/todos/health 13개 엔드포인트, JWT bearerAuth, 요청/응답 스키마 및 BR/UC 추적 설명 포함 |
 
 ---

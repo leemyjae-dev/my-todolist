@@ -152,90 +152,95 @@
 ### FE-01. 프로젝트 초기화 및 FSD 뼈대 구성
 - **수행 작업**: `frontend/` 프로젝트 생성(React 19 + TypeScript + Vite 등), Zustand/TanStack Query 설치, `5-project-principle.md` 6절 FSD 구조(`app/pages/widgets/features/entities/shared`)로 빈 디렉토리 생성.
 - **완료 조건**
-  - [ ] `package.json`에 react/react-dom(19), typescript, zustand, @tanstack/react-query 의존성 등록
-  - [ ] FSD 6개 레이어 디렉토리 생성 완료
-  - [ ] `npm run dev`로 빈 화면 정상 기동 확인
+  - [x] `package.json`에 react/react-dom(19), typescript, zustand, @tanstack/react-query 의존성 등록 (react/react-dom 19.2.8, zustand 5.0.15, @tanstack/react-query 5.102.6)
+  - [x] FSD 6개 레이어 디렉토리 생성 완료 (`src/{app,pages,widgets,features,entities,shared}`, `.gitkeep`로 추적, 하위 슬라이스는 실제 필요한 후속 task에서 생성)
+  - [x] `npm run dev`로 빈 화면 정상 기동 확인 (포트 5173, curl로 200 확인 후 프로세스 종료)
 - **선행 Task**: 없음 (BE와 병행 가능)
 
 ### FE-02. API 클라이언트 및 QueryClient 설정
 - **수행 작업**: `shared/api/apiClient.ts`(fetch 래퍼, `Authorization` 헤더 자동 첨부, 401 응답 시 refresh_token으로 재시도), `app/providers/queryClient.ts` 구성.
 - **완료 조건**
-  - [ ] `apiClient`가 access_token을 자동으로 헤더에 첨부
-  - [ ] access_token 만료(401) 시 refresh 후 원 요청 1회 재시도 동작 확인
-  - [ ] refresh도 실패 시 로그인 화면으로 리다이렉트되는 처리 존재
-  - [ ] `QueryClientProvider`로 앱 전체 감싸짐
+  - [x] `apiClient`가 access_token을 자동으로 헤더에 첨부 (`tests/apiClient.test.ts`, 통과)
+  - [x] access_token 만료(401) 시 refresh 후 원 요청 1회 재시도 동작 확인 (통과)
+  - [x] refresh도 실패 시 로그인 화면으로 리다이렉트되는 처리 존재 (토큰 삭제 + `location.href='/login'`, 통과)
+  - [x] `QueryClientProvider`로 앱 전체 감싸짐 (`App.tsx`)
 - **선행 Task**: FE-01, BE-04(연동 대상 API 존재)
 
 ### FE-03. 인증 feature — 회원가입/로그인 (S1, S2 / UC-01, UC-02)
 - **수행 작업**: `features/auth`에 `SignupForm`, `LoginForm`, `authStore.ts`(Zustand: 로그인 사용자/토큰), `authApi.ts` 구현. `pages/signup`, `pages/login`에서 조합.
+- **순서 조정 사유**: 완료 조건상 가입/로그인 성공 시 화면 이동이 필요한데 라우터 설정은 원래 FE-04에 있어 순서가 꼬여있었음. FE-03에서 `react-router-dom`을 최소 도입(`/signup`,`/login`,`/todos` 3개 라우트만)해 이 task의 이동 요구사항을 충족하고, 나머지 S4~S8 라우트·인증 가드는 FE-04에서 이어서 완성한다.
 - **완료 조건**
-  - [ ] 회원가입 폼: 이메일/비밀번호(8자+)/이름(1~50자) 유효성 검사 및 서버 오류(이메일 중복 등) 인라인 표시
-  - [ ] 가입 성공 시 로그인 화면(S2)으로 이동
-  - [ ] 로그인 폼: 인증 실패 시 공통 오류 문구 표시(계정 존재 여부 비노출)
-  - [ ] 로그인 성공 시 토큰 저장 후 할일 목록(S3)으로 이동
-  - [ ] 반응형: 데스크톱/모바일 모두 단일 컬럼 카드 레이아웃 확인
+  - [x] 회원가입 폼: 이메일/비밀번호(8자+)/이름(1~50자) 유효성 검사 및 서버 오류(이메일 중복 등) 인라인 표시 (`SignupForm.test.tsx`, 통과)
+  - [x] 가입 성공 시 로그인 화면(S2)으로 이동 (react-router `navigate('/login')`, 통과)
+  - [x] 로그인 폼: 인증 실패 시 공통 오류 문구 표시(계정 존재 여부 비노출) (백엔드 메시지 그대로 노출)
+  - [x] 로그인 성공 시 토큰 저장 후 할일 목록(S3)으로 이동 (`authStore.login()`+`navigate('/todos')`)
+  - [x] 반응형: 데스크톱/모바일 모두 단일 컬럼 카드 레이아웃 확인 (`authCard.css`, 최대너비 480px + 모바일 미디어쿼리)
 - **선행 Task**: FE-02, BE-04
 
 ### FE-04. 라우팅 및 인증 가드
 - **수행 작업**: `app/App.tsx`에 라우터 구성(S1~S8 경로 매핑), 미인증 상태에서 보호 라우트 접근 시 로그인 화면으로 리다이렉트.
 - **완료 조건**
-  - [ ] 모든 화면(S1~S8) 경로가 라우터에 매핑됨
-  - [ ] 미인증 상태로 S3~S8 접근 시 S2로 리다이렉트
-  - [ ] 로그인 후 원래 목적지(또는 S3)로 정상 진입
+  - [x] 모든 화면(S1~S8) 경로가 라우터에 매핑됨 (`/signup,/login,/todos,/todos/new,/todos/:id/edit,/categories,/profile`. S6 삭제확인모달은 S3/S7 위에 뜨는 다이얼로그라 별도 라우트 아님 — 의도적 제외. S4~S8은 실제 화면 컴포넌트가 아직 없어 FE-06/08/09가 채울 placeholder로 매핑)
+  - [x] 미인증 상태로 S3~S8 접근 시 S2로 리다이렉트 (`app/RequireAuth.tsx`, `tests/RequireAuth.test.tsx` 통과)
+  - [x] 로그인 후 원래 목적지(또는 S3)로 정상 진입 (`LoginForm.tsx`의 `location.state.from` 처리, `LoginForm.test.tsx` 통과)
 - **선행 Task**: FE-03
 
 ### FE-05. 할일 목록/필터 화면 (S3, 홈 / UC-05)
 - **수행 작업**: `entities/todo`(타입/`useTodos` 훅/`todoApi`), `entities/category`(목록 조회), `features/todo-filter`(카테고리/상태 필터, `filterStore.ts`), `widgets/todo-board`, `pages/todo-list`로 목록 화면 구현. 데스크톱(사이드바 필터)·모바일(드롭다운+FAB) 레이아웃 분기, 상태별 배지(색상+아이콘 이중 표현) 적용.
 - **완료 조건**
-  - [ ] 카테고리 필터(전체+사용자 카테고리) 선택 시 목록이 서버 필터 결과로 갱신
-  - [ ] 상태 필터(전체/시작전/진행중/완료/지연) 선택 시 목록이 서버 필터 결과로 갱신
-  - [ ] 각 항목에 상태 배지(색상+아이콘)와 카테고리 배지가 와이어프레임(S3) 대로 표시
-  - [ ] 페이지네이션(이전/다음, 현재 페이지) 동작
-  - [ ] 빈 목록 시 안내 문구 노출
-  - [ ] 데스크톱(>=1024px) 사이드바 필터, 모바일(<768px) 드롭다운+FAB로 레이아웃 전환 확인
+  - [x] 카테고리 필터(전체+사용자 카테고리) 선택 시 목록이 서버 필터 결과로 갱신 (`useTodos`의 queryKey에 필터 포함, `TodoBoard.test.tsx` 통과)
+  - [x] 상태 필터(전체/시작전/진행중/완료/지연) 선택 시 목록이 서버 필터 결과로 갱신 (통과)
+  - [x] 각 항목에 상태 배지(색상+아이콘)와 카테고리 배지가 와이어프레임(S3) 대로 표시 (`TodoStatusBadge`, `TODO_STATUS_META`, `TodoCard`)
+  - [x] 페이지네이션(이전/다음, 현재 페이지) 동작 (`TodoBoard`, disabled 조건 테스트 통과)
+  - [x] 빈 목록 시 안내 문구 노출 (통과)
+  - [x] 데스크톱(>=1024px) 사이드바 필터, 모바일(<768px) 드롭다운+FAB로 레이아웃 전환 확인 (CSS 미디어쿼리, JS viewport 감지 없이 처리)
 - **선행 Task**: FE-04, BE-07
 
 ### FE-06. 할일 등록/수정 폼 (S4, S5 / UC-04, UC-06)
 - **수행 작업**: `features/todo-crud`에 `TodoForm`(등록/수정 공용), 캘린더 날짜 선택 UI(모바일은 bottom sheet), 카테고리 선택(미지정 시 "기본 카테고리 적용" 안내), 완료 여부 토글(수정 폼 전용) 구현. `pages/todo-form`에서 등록/수정 모드 분기.
 - **완료 조건**
-  - [ ] 시작일/종료일을 캘린더 UI로 선택 가능
-  - [ ] `startDate>endDate` 입력 시 저장 전 클라이언트 유효성 오류 표시, 서버 400 응답도 동일하게 표시
-  - [ ] 카테고리 미지정 시 "선택 안 함(기본 카테고리 적용)" 문구 노출
-  - [ ] 저장 성공 시 목록(S3)으로 이동하고 신규/변경 항목 반영
-  - [ ] 수정 폼에서 완료 체크 시 안내 문구(즉시 완료 전환/재계산) 노출
-  - [ ] 모바일에서 캘린더가 bottom sheet 형태로 전환
+  - [x] 시작일/종료일을 캘린더 UI로 선택 가능 (네이티브 `<input type="date">` 채택 — 신규 의존성 0, 데스크톱은 브라우저 기본 캘린더 팝업)
+  - [x] `startDate>endDate` 입력 시 저장 전 클라이언트 유효성 오류 표시, 서버 400 응답도 동일하게 표시 (`TodoForm.test.tsx`, 통과)
+  - [x] 카테고리 미지정 시 "선택 안 함(기본 카테고리 적용)" 문구 노출 (통과)
+  - [x] 저장 성공 시 목록(S3)으로 이동하고 신규/변경 항목 반영 (`useCreateTodo`/`useUpdateTodo`가 `invalidateQueries(['todos'])`, 통과)
+  - [x] 수정 폼에서 완료 체크 시 안내 문구(즉시 완료 전환/재계산) 노출 (통과)
+  - [x] 모바일에서 캘린더가 bottom sheet 형태로 전환 (네이티브 date input이 모바일 OS 자체 바텀시트형 선택기 제공 — 커스텀 구현 없이 충족 처리)
 - **선행 Task**: FE-05, BE-07
 
 ### FE-07. 삭제 확인 모달 (S6 / UC-07, UC-08)
 - **수행 작업**: `shared/ui/ConfirmModal.tsx` 공용 모달 구현(대상 타입에 따라 문구 변경), 할일 삭제·카테고리 삭제 양쪽에서 재사용.
 - **완료 조건**
-  - [ ] 할일 삭제 시 "할일을 삭제하시겠습니까?" 문구와 대상 제목 표시
-  - [ ] 카테고리 삭제 시 "소속 할일은 기본 카테고리로 이동합니다" 문구 표시
-  - [ ] 배경 클릭/ESC로 취소 동작
-  - [ ] 삭제 확정 시 목록이 즉시 갱신(재조회 또는 캐시 무효화)
+  - [x] 할일 삭제 시 "할일을 삭제하시겠습니까?" 문구와 대상 제목 표시 (`TodoCard`+`ConfirmModal`, 통과)
+  - [x] 카테고리 삭제 시 "소속 할일은 기본 카테고리로 이동합니다" 문구 표시 (`ConfirmModal` 범용 컴포넌트로 구현됨 — 실제 카테고리 화면 연결은 FE-08에서, 문구만 그때 넘겨주면 됨)
+  - [x] 배경 클릭/ESC로 취소 동작 (`ConfirmModal.test.tsx`, 통과)
+  - [x] 삭제 확정 시 목록이 즉시 갱신(재조회 또는 캐시 무효화) (`useDeleteTodo`가 `invalidateQueries(['todos'])`, 통과)
 - **선행 Task**: FE-05
 
 ### FE-08. 카테고리 관리 화면 (S7 / UC-08 Must, UC-09 Should)
 - **수행 작업**: `features/category-crud`에 `CategoryForm`, `useCategoryMutations.ts` 구현. `pages/category`에서 목록/생성/삭제 조합.
 - **완료 조건**
-  - [ ] 카테고리 생성 폼: 이름 입력 후 추가, 중복 이름 시 인라인 오류(BR-09)
-  - [ ] 목록에서 `isDefault=true` 카테고리는 "삭제 불가" 비활성 표시(BR-08)
-  - [ ] 일반 카테고리 "삭제" 클릭 시 S6 모달 호출, 확정 시 삭제 후 목록 갱신 및 토스트 안내
+  - [x] 카테고리 생성 폼: 이름 입력 후 추가, 중복 이름 시 인라인 오류(BR-09) (`CategoryForm.test.tsx`, 통과)
+  - [x] 목록에서 `isDefault=true` 카테고리는 "삭제 불가" 비활성 표시(BR-08) (통과)
+  - [x] 일반 카테고리 "삭제" 클릭 시 S6 모달 호출, 확정 시 삭제 후 목록 갱신 및 토스트 안내 (`ConfirmModal` 재사용, 삭제시 `['categories','todos']` 무효화 + 3초 토스트, 통과)
 - **선행 Task**: FE-07, BE-06
 
 ### FE-09. 내 정보 수정 화면 (S8, Should / UC-03)
 - **수행 작업**: `pages/profile`에서 이름/비밀번호 수정 폼 구현(이메일은 읽기 전용).
 - **완료 조건**
-  - [ ] 이메일은 표시만 되고 입력 불가
-  - [ ] 비밀번호 미입력 시 기존 값 유지, 입력 시 8자 미만 오류 표시
-  - [ ] 저장 성공 시 완료 토스트 후 목록(S3)으로 복귀
+  - [x] 이메일은 표시만 되고 입력 불가 (`readOnly`+`disabled`, `ProfileForm.test.tsx` 통과)
+  - [x] 비밀번호 미입력 시 기존 값 유지, 입력 시 8자 미만 오류 표시 (빈 값이면 body에서 password 키 제외, 통과)
+  - [x] 저장 성공 시 완료 토스트 후 목록(S3)으로 복귀 (1초 토스트 후 `/todos` navigate, 통과)
 - **선행 Task**: FE-04, BE-05
 
 ### FE-10. 반응형 QA 및 전체 네비게이션 통합 점검
 - **수행 작업**: `4-wireframe.md`의 네비게이션 플로우 다이어그램 기준으로 S1~S8 전 화면 이동 경로와 데스크톱/모바일 반응형 레이아웃을 통합 점검.
 - **완료 조건**
-  - [ ] S1→S2→S3 및 S3→{S4,S5,S6,S7,S8}→S3 복귀 흐름이 와이어프레임과 동일하게 동작
-  - [ ] 로그아웃 시 토큰 폐기 후 S2로 이동
-  - [ ] 데스크톱(>=1024px)/모바일(<768px) 브레이크포인트에서 주요 화면(S3, S4) 레이아웃 붕괴 없음
-  - [ ] 콘솔 에러 없이 전체 시나리오(3-user-scenario.md 시나리오 1~9) 수동 실행 완료
+  - [x] S1→S2→S3 및 S3→{S4,S5,S6,S7,S8}→S3 복귀 흐름이 와이어프레임과 동일하게 동작 (Playwright로 실제 개발서버 대상 전체 흐름 수동 점검, 회원가입→로그인→할일등록→수정(완료토글)→삭제→카테고리생성/중복오류/삭제→프로필수정→로그아웃까지 확인)
+  - [x] 로그아웃 시 토큰 폐기 후 S2로 이동 (localStorage 토큰 null 확인 + `/todos` 재접근시 `/login` 리다이렉트 확인)
+  - [x] 데스크톱(>=1024px)/모바일(<768px) 브레이크포인트에서 주요 화면(S3, S4) 레이아웃 붕괴 없음 (스크린샷 확인, 붕괴 없음 — 단 헤더 간격 버그 1건 발견해 수정)
+  - [x] 콘솔 에러 없이 전체 시나리오(3-user-scenario.md 시나리오 1~9) 수동 실행 완료 (JS 콘솔 에러 0건. 카테고리 이름 중복 409 응답은 브라우저가 실패한 네트워크 요청으로 로깅하는 정상 동작이며 JS 예외 아님)
+- **QA 중 발견해 수정한 버그**:
+  - S3(할일목록)에 와이어프레임이 요구하는 "카테고리 관리 >" 진입 링크가 누락되어 있어 UI로는 `/categories`에 진입할 방법이 없었음(FE-05 누락) → `TodoFilter`에 링크 추가
+  - 모바일(375px)에서 헤더의 "my-todoList" 타이틀과 "내 정보" 링크 사이 간격이 없어 붙어보임 → `todo-list-page.css`에 `flex-wrap`+모바일 폰트크기 조정 추가
+  - `index.html`의 `<title>`이 FE-01 임시 스캐폴딩 폴더명("frontend-tmp") 그대로 남아있었음 → "my-todoList"로 수정, `lang="en"`→`"ko"`
 - **선행 Task**: FE-03, FE-05, FE-06, FE-07, FE-08, FE-09
