@@ -1,5 +1,7 @@
 import { apiFetch } from '../../../shared/api/apiClient';
 import type { TodoListParams, TodoListResponse } from '../model/todo.types';
+import { translate } from '../../../shared/lib/i18n/translate';
+import { useLocaleStore } from '../../../shared/lib/i18n/localeStore';
 
 export async function fetchTodos(params: TodoListParams): Promise<TodoListResponse> {
   const qs = new URLSearchParams();
@@ -10,6 +12,6 @@ export async function fetchTodos(params: TodoListParams): Promise<TodoListRespon
 
   if (import.meta.env.DEV) console.log('[todoApi] fetchTodos', params);
   const res = await apiFetch(`/todos?${qs.toString()}`);
-  if (!res.ok) throw new Error('할일 목록을 불러오지 못했습니다.');
+  if (!res.ok) throw new Error(translate(useLocaleStore.getState().locale, 'todo.errors.loadFailed'));
   return res.json();
 }

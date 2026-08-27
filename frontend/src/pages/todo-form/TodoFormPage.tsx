@@ -1,14 +1,16 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTodos } from '../../entities/todo/model/useTodos';
 import TodoForm from '../../features/todo-crud/ui/TodoForm';
+import { useT } from '../../shared/lib/i18n/useT';
 
 export default function TodoFormPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
 
   if (!id) {
     return (
       <div className="todo-form-page">
-        <h2>할일 추가</h2>
+        <h2>{t('todo.form.addTitle')}</h2>
         <TodoForm mode="create" />
       </div>
     );
@@ -17,20 +19,20 @@ export default function TodoFormPage() {
   const { data, isLoading } = useTodos({ limit: 100 });
   const todo = data?.items.find((t) => t.id === id);
 
-  if (isLoading) return <div className="todo-form-page">불러오는 중...</div>;
+  if (isLoading) return <div className="todo-form-page">{t('common.loading')}</div>;
 
   if (!todo) {
     return (
       <div className="todo-form-page">
-        <p>할일 정보를 불러올 수 없습니다.</p>
-        <Link to="/todos">목록으로 돌아가기</Link>
+        <p>{t('todo.form.notFound')}</p>
+        <Link to="/todos">{t('todo.form.backToList')}</Link>
       </div>
     );
   }
 
   return (
     <div className="todo-form-page">
-      <h2>할일 수정</h2>
+      <h2>{t('todo.form.editTitle')}</h2>
       <TodoForm mode="edit" initialTodo={todo} />
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useT } from '../lib/i18n/useT';
 import './confirm-modal.css';
 
 interface ConfirmModalProps {
@@ -15,11 +16,12 @@ export default function ConfirmModal({
   open,
   title,
   description,
-  confirmLabel = '삭제',
+  confirmLabel,
   onConfirm,
   onCancel,
   isConfirming = false,
 }: ConfirmModalProps) {
+  const t = useT();
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(e: KeyboardEvent) {
@@ -37,9 +39,9 @@ export default function ConfirmModal({
         <h3>{title}</h3>
         <p>{description}</p>
         <div className="confirm-modal__actions">
-          <button type="button" onClick={onCancel}>취소</button>
+          <button type="button" onClick={onCancel}>{t('common.cancel')}</button>
           <button type="button" className="confirm-modal__confirm" onClick={onConfirm} disabled={isConfirming}>
-            {confirmLabel}
+            {confirmLabel ?? t('common.delete')}
           </button>
         </div>
       </div>

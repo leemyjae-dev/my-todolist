@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../../shared/api/apiClient';
+import { parseErrorOrThrow } from '../../../shared/api/parseErrorOrThrow';
 import type { Todo } from '../../../entities/todo/model/todo.types';
 
 interface TodoInput {
@@ -9,12 +10,6 @@ interface TodoInput {
   startDate: string;
   endDate: string;
   isCompleted?: boolean;
-}
-
-async function parseErrorOrThrow(res: Response): Promise<never> {
-  const body = await res.json().catch(() => ({}));
-  const message = body?.error?.message ?? '요청 처리 중 오류가 발생했습니다.';
-  throw new Error(message);
 }
 
 export function useCreateTodo() {

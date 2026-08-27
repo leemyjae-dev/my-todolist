@@ -5,6 +5,7 @@ import TodoStatusBadge from './TodoStatusBadge';
 import { useDeleteTodo } from '../../../features/todo-crud/model/useTodoMutations';
 import ConfirmModal from '../../../shared/ui/ConfirmModal';
 import { TODO_STATUS_META } from '../../../shared/lib/todoStatus';
+import { useT } from '../../../shared/lib/i18n/useT';
 import './todo-card.css';
 
 interface TodoCardProps {
@@ -13,6 +14,7 @@ interface TodoCardProps {
 }
 
 export default function TodoCard({ todo, categoryName }: TodoCardProps) {
+  const t = useT();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const deleteTodo = useDeleteTodo();
   const accentColor = TODO_STATUS_META[todo.status].text;
@@ -33,15 +35,15 @@ export default function TodoCard({ todo, categoryName }: TodoCardProps) {
         {todo.startDate} ~ {todo.endDate}
       </p>
       <div className="todo-card__actions">
-        <Link to={`/todos/${todo.id}/edit`}>수정</Link>
+        <Link to={`/todos/${todo.id}/edit`}>{t('todo.card.editLink')}</Link>
         <button type="button" onClick={() => setConfirmOpen(true)}>
-          삭제
+          {t('common.delete')}
         </button>
       </div>
       <ConfirmModal
         open={confirmOpen}
-        title="할일을 삭제하시겠습니까?"
-        description={`"${todo.title}" 항목이 영구 삭제됩니다.`}
+        title={t('todo.card.deleteConfirmTitle')}
+        description={t('todo.card.deleteConfirmDescription', { title: todo.title })}
         isConfirming={deleteTodo.isPending}
         onConfirm={async () => {
           await deleteTodo.mutateAsync(todo.id);

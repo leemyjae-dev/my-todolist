@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signup } from '../api/authApi';
 import { validateEmail, validateName, validatePassword } from '../model/validation';
+import { useT } from '../../../shared/lib/i18n/useT';
 import './authForm.css';
 
 interface FieldErrors {
@@ -11,6 +12,7 @@ interface FieldErrors {
 }
 
 export default function SignupForm() {
+  const t = useT();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,7 +52,7 @@ export default function SignupForm() {
         </p>
       )}
       <div className="auth-form__field">
-        <label htmlFor="signup-email">이메일</label>
+        <label htmlFor="signup-email">{t('auth.signup.emailLabel')}</label>
         <input
           id="signup-email"
           type="email"
@@ -66,7 +68,7 @@ export default function SignupForm() {
         )}
       </div>
       <div className="auth-form__field">
-        <label htmlFor="signup-name">이름</label>
+        <label htmlFor="signup-name">{t('auth.signup.nameLabel')}</label>
         <input
           id="signup-name"
           type="text"
@@ -82,7 +84,7 @@ export default function SignupForm() {
         )}
       </div>
       <div className="auth-form__field">
-        <label htmlFor="signup-password">비밀번호</label>
+        <label htmlFor="signup-password">{t('auth.signup.passwordLabel')}</label>
         <input
           id="signup-password"
           type="password"
@@ -98,10 +100,10 @@ export default function SignupForm() {
         )}
       </div>
       <button type="submit" className="auth-form__submit" disabled={isSubmitting}>
-        가입하기
+        {t('auth.signup.submit')}
       </button>
       <p className="auth-form__link">
-        <Link to="/login">이미 계정이 있으신가요? 로그인하기</Link>
+        <Link to="/login">{t('auth.signup.hasAccount')}</Link>
       </p>
     </form>
   );

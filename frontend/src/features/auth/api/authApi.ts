@@ -1,16 +1,8 @@
 import { apiFetch } from '../../../shared/api/apiClient';
+import { parseErrorOrThrow } from '../../../shared/api/parseErrorOrThrow';
 
 export interface User { id: string; email: string; name: string; createdAt: string; updatedAt: string; }
 export interface AuthTokens { accessToken: string; refreshToken: string; user: User; }
-
-async function parseErrorOrThrow(res: Response): Promise<never> {
-  const body = await res.json().catch(() => ({}));
-  const message = body?.error?.message ?? '요청 처리 중 오류가 발생했습니다.';
-  const code = body?.error?.code ?? 'UNKNOWN_ERROR';
-  const err = new Error(message) as Error & { code: string };
-  err.code = code;
-  throw err;
-}
 
 export async function signup(input: { email: string; password: string; name: string }): Promise<User> {
   const res = await apiFetch('/auth/signup', { method: 'POST', body: JSON.stringify(input) });

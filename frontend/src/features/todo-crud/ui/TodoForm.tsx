@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCategories } from '../../../entities/category/model/useCategories';
 import { useCreateTodo, useUpdateTodo } from '../model/useTodoMutations';
 import type { Todo } from '../../../entities/todo/model/todo.types';
+import { useT } from '../../../shared/lib/i18n/useT';
 import './todo-form.css';
 
 interface TodoFormProps {
@@ -11,6 +12,7 @@ interface TodoFormProps {
 }
 
 export default function TodoForm({ mode, initialTodo }: TodoFormProps) {
+  const t = useT();
   const navigate = useNavigate();
   const { data: categories } = useCategories();
   const createTodo = useCreateTodo();
@@ -33,11 +35,11 @@ export default function TodoForm({ mode, initialTodo }: TodoFormProps) {
 
     if (!title.trim()) {
       setDateError(null);
-      setServerError('제목을 입력해주세요.');
+      setServerError(t('todo.form.titleRequired'));
       return;
     }
     if (startDate && endDate && startDate > endDate) {
-      setDateError('종료일은 시작일 이후여야 합니다.');
+      setDateError(t('todo.form.dateOrderInvalid'));
       return;
     }
     setDateError(null);
@@ -68,33 +70,33 @@ export default function TodoForm({ mode, initialTodo }: TodoFormProps) {
       {serverError && <p className="todo-form__server-error" role="alert">{serverError}</p>}
 
       <div className="todo-form__field">
-        <label htmlFor="todo-title">제목 *</label>
+        <label htmlFor="todo-title">{t('todo.form.titleLabel')}</label>
         <input id="todo-title" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
 
       <div className="todo-form__field">
-        <label htmlFor="todo-description">설명</label>
+        <label htmlFor="todo-description">{t('todo.form.descriptionLabel')}</label>
         <textarea id="todo-description" value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
 
       <div className="todo-form__field">
-        <label htmlFor="todo-category">카테고리</label>
+        <label htmlFor="todo-category">{t('todo.form.categoryLabel')}</label>
         <select id="todo-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-          <option value="">선택 안 함 (기본 카테고리 적용)</option>
+          <option value="">{t('todo.form.categoryNone')}</option>
           {categories?.map((c) => (
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
-        {!categoryId && <p className="todo-form__hint">미지정 시 '기본' 카테고리로 등록됩니다.</p>}
+        {!categoryId && <p className="todo-form__hint">{t('todo.form.categoryHint')}</p>}
       </div>
 
       <div className="todo-form__field">
-        <label htmlFor="todo-start-date">시작일 *</label>
+        <label htmlFor="todo-start-date">{t('todo.form.startDateLabel')}</label>
         <input id="todo-start-date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
       </div>
 
       <div className="todo-form__field">
-        <label htmlFor="todo-end-date">종료일 *</label>
+        <label htmlFor="todo-end-date">{t('todo.form.endDateLabel')}</label>
         <input id="todo-end-date" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
         {dateError && <p className="todo-form__error">{dateError}</p>}
       </div>
@@ -107,19 +109,19 @@ export default function TodoForm({ mode, initialTodo }: TodoFormProps) {
               checked={isCompleted}
               onChange={(e) => setIsCompleted(e.target.checked)}
             />
-            완료로 표시
+            {t('todo.form.completedLabel')}
           </label>
           <p className="todo-form__hint">
             {isCompleted
-              ? '완료로 전환되며 완료 시각이 기록됩니다.'
-              : '완료를 해제하면 날짜 기준으로 상태가 재계산됩니다.'}
+              ? t('todo.form.completedHintOn')
+              : t('todo.form.completedHintOff')}
           </p>
         </div>
       )}
 
       <div className="todo-form__actions">
-        <button type="button" onClick={() => navigate('/todos')}>취소</button>
-        <button type="submit" disabled={isSubmitting}>저장</button>
+        <button type="button" onClick={() => navigate('/todos')}>{t('common.cancel')}</button>
+        <button type="submit" disabled={isSubmitting}>{t('common.save')}</button>
       </div>
     </form>
   );

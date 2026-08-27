@@ -1,16 +1,18 @@
 import { useThemeStore } from '../../features/theme/model/themeStore';
+import { useT } from '../lib/i18n/useT';
 import './theme-toggle.css';
 
 export default function ThemeToggle() {
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const t = useT();
 
   return (
     <button
       type="button"
       className="theme-toggle"
       onClick={toggleTheme}
-      aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+      aria-label={theme === 'light' ? t('theme.switchToDark') : t('theme.switchToLight')}
     >
       {theme === 'light' ? (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

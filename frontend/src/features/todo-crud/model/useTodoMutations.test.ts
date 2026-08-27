@@ -71,7 +71,7 @@ describe('useTodoMutations', () => {
         startDate: '2026-08-27',
         endDate: '2026-08-28',
       })
-    ).rejects.toThrow('제목은 필수입니다.');
+    ).rejects.toThrow('입력값을 확인해주세요.');
 
     await waitFor(() => expect(result.current.isError).toBe(true));
   });

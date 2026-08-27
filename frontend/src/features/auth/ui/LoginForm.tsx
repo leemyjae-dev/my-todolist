@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { login } from '../api/authApi';
 import { useAuthStore } from '../model/authStore';
+import { useT } from '../../../shared/lib/i18n/useT';
 import './authForm.css';
 
 interface FieldErrors {
@@ -10,6 +11,7 @@ interface FieldErrors {
 }
 
 export default function LoginForm() {
+  const t = useT();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
@@ -23,8 +25,8 @@ export default function LoginForm() {
     setServerError(null);
 
     const errors: FieldErrors = {
-      email: email ? undefined : '이메일을 입력해주세요.',
-      password: password ? undefined : '비밀번호를 입력해주세요.',
+      email: email ? undefined : t('auth.validation.emailRequired'),
+      password: password ? undefined : t('auth.validation.passwordRequired'),
     };
     setFieldErrors(errors);
     if (errors.email || errors.password) return;
@@ -50,7 +52,7 @@ export default function LoginForm() {
         </p>
       )}
       <div className="auth-form__field">
-        <label htmlFor="login-email">이메일</label>
+        <label htmlFor="login-email">{t('auth.login.emailLabel')}</label>
         <input
           id="login-email"
           type="email"
@@ -66,7 +68,7 @@ export default function LoginForm() {
         )}
       </div>
       <div className="auth-form__field">
-        <label htmlFor="login-password">비밀번호</label>
+        <label htmlFor="login-password">{t('auth.login.passwordLabel')}</label>
         <input
           id="login-password"
           type="password"
@@ -82,10 +84,10 @@ export default function LoginForm() {
         )}
       </div>
       <button type="submit" className="auth-form__submit" disabled={isSubmitting}>
-        로그인
+        {t('auth.login.submit')}
       </button>
       <p className="auth-form__link">
-        <Link to="/signup">계정이 없으신가요? 회원가입하기</Link>
+        <Link to="/signup">{t('auth.login.noAccount')}</Link>
       </p>
     </form>
   );

@@ -1,11 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../../shared/api/apiClient';
+import { parseErrorOrThrow } from '../../../shared/api/parseErrorOrThrow';
 import type { Category } from '../../../entities/category/model/category.types';
-
-async function parseErrorOrThrow(res: Response): Promise<never> {
-  const body = await res.json().catch(() => ({}));
-  throw new Error(body?.error?.message ?? '요청 처리 중 오류가 발생했습니다.');
-}
 
 export function useCreateCategory() {
   const queryClient = useQueryClient();

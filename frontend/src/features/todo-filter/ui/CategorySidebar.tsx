@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useCategories } from '../../../entities/category/model/useCategories';
 import { useFilterStore } from '../model/filterStore';
+import { useT } from '../../../shared/lib/i18n/useT';
 import './todo-filter.css';
 
 export default function CategorySidebar() {
+  const t = useT();
   const { data: categories } = useCategories();
   const categoryId = useFilterStore((s) => s.categoryId);
   const setCategoryId = useFilterStore((s) => s.setCategoryId);
@@ -12,8 +14,8 @@ export default function CategorySidebar() {
 
   return (
     <aside className="todo-filter__panel">
-      <div className="todo-filter__panel-title">카테고리</div>
-      <div className="todo-filter__categories" role="radiogroup" aria-label="카테고리 필터">
+      <div className="todo-filter__panel-title">{t('todo.filter.categoryLabel')}</div>
+      <div className="todo-filter__categories" role="radiogroup" aria-label={t('todo.filter.categoryFilterAria')}>
         <label>
           <input
             type="radio"
@@ -21,7 +23,7 @@ export default function CategorySidebar() {
             checked={categoryId === undefined}
             onChange={() => setCategoryId(undefined)}
           />
-          전체
+          {t('todo.filter.all')}
         </label>
         {list.map((c) => (
           <label key={c.id}>
@@ -36,7 +38,7 @@ export default function CategorySidebar() {
         ))}
       </div>
       <Link to="/categories" className="todo-filter__manage-link">
-        카테고리 관리 &gt;
+        {t('todo.filter.manageLink')}
       </Link>
     </aside>
   );

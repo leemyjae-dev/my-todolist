@@ -1,18 +1,24 @@
+import { translate } from '../../../shared/lib/i18n/translate';
+import { useLocaleStore } from '../../../shared/lib/i18n/localeStore';
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validateEmail(email: string): string | null {
-  if (!email) return '이메일을 입력해주세요.';
-  if (!EMAIL_RE.test(email)) return '올바른 이메일 형식이 아닙니다.';
+  const locale = useLocaleStore.getState().locale;
+  if (!email) return translate(locale, 'auth.validation.emailRequired');
+  if (!EMAIL_RE.test(email)) return translate(locale, 'auth.validation.emailInvalid');
   return null;
 }
 
 export function validatePassword(password: string): string | null {
-  if (!password) return '비밀번호를 입력해주세요.';
-  if (password.length < 8) return '비밀번호는 8자 이상이어야 합니다.';
+  const locale = useLocaleStore.getState().locale;
+  if (!password) return translate(locale, 'auth.validation.passwordRequired');
+  if (password.length < 8) return translate(locale, 'auth.validation.passwordTooShort');
   return null;
 }
 
 export function validateName(name: string): string | null {
-  if (!name || name.length < 1 || name.length > 50) return '이름은 1~50자여야 합니다.';
+  const locale = useLocaleStore.getState().locale;
+  if (!name || name.length < 1 || name.length > 50) return translate(locale, 'auth.validation.nameInvalid');
   return null;
 }
