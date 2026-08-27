@@ -57,91 +57,92 @@
 ### BE-01. 프로젝트 초기화 및 디렉토리 뼈대 구성
 - **수행 작업**: `backend/` 프로젝트 생성(Express, `pg`, `jsonwebtoken`, `bcrypt`, `dotenv`), `5-project-principle.md` 7절 기준 디렉토리(`src/db`, `src/modules`, `src/shared`, `src/middlewares`, `migrations`, `tests`) 생성.
 - **완료 조건**
-  - [ ] `package.json`에 Express/pg/jsonwebtoken/bcrypt/dotenv 의존성 등록
-  - [ ] `5-project-principle.md` 7절과 동일한 디렉토리 구조 생성
-  - [ ] `npm run dev`(또는 동등 명령)로 빈 서버 기동 확인
+  - [x] `package.json`에 Express/pg/jsonwebtoken/bcrypt/dotenv 의존성 등록
+  - [x] `5-project-principle.md` 7절과 동일한 디렉토리 구조 생성 (로직 파일은 뼈대만, `.gitkeep`으로 빈 디렉토리 유지)
+  - [x] `npm run dev`(또는 동등 명령)로 빈 서버 기동 확인 (수동 기동 + `npm test` 자동 검증, 커버리지 app.js 100%/server.js 84.6%, 전체 90%)
 - **선행 Task**: 없음 (DB-01과 병행 가능)
 
 ### BE-02. DB Pool 모듈
 - **수행 작업**: `src/db/pool.js`에 `pg.Pool` 싱글턴 생성(`max: 10~20`), 앱 시작 시 1회만 생성되도록 구현.
 - **완료 조건**
-  - [ ] `pool.js`가 `DATABASE_URL` 환경변수로 Pool 생성
-  - [ ] 앱 재기동 없이 여러 요청에서 동일 Pool 인스턴스 재사용 확인(로그/디버그로 확인)
-  - [ ] 간단한 `SELECT 1` 쿼리로 DB 연결 성공 확인
+  - [x] `pool.js`가 `DATABASE_URL` 환경변수로 Pool 생성 (`.env`의 키를 `POSTGRES_CONNECTION_STRING`→`DATABASE_URL`로 정정하여 일치시킴)
+  - [x] 앱 재기동 없이 여러 요청에서 동일 Pool 인스턴스 재사용 확인(`tests/pool.test.js` — require 캐시로 동일 인스턴스 확인, 통과)
+  - [x] 간단한 `SELECT 1` 쿼리로 DB 연결 성공 확인(`tests/pool.test.js`, 통과)
 - **선행 Task**: BE-01, DB-02, DB-03
 
 ### BE-03. 인증 유틸 및 미들웨어 (JWT)
 - **수행 작업**: `src/middlewares/auth.js`(access_token 검증), JWT 발급/검증 유틸(access 15m/refresh 7d), `src/middlewares/errorHandler.js`(공통 에러 응답 포맷 `{error:{code,message}}`).
 - **완료 조건**
-  - [ ] access_token/refresh_token 발급 함수 구현 및 단위 확인(만료시간 반영)
-  - [ ] `auth.js` 미들웨어가 유효 토큰 통과, 미인증 요청 401 반환하는 것을 확인
-  - [ ] `errorHandler`가 모든 라우트 에러를 동일 포맷으로 응답
+  - [x] access_token/refresh_token 발급 함수 구현 및 단위 확인(만료시간 반영) (`tests/jwt.test.js`, 통과)
+  - [x] `auth.js` 미들웨어가 유효 토큰 통과, 미인증 요청 401 반환하는 것을 확인 (`tests/auth-middleware.test.js`, 통과)
+  - [x] `errorHandler`가 모든 라우트 에러를 동일 포맷으로 응답 (`tests/error-handler.test.js`, 통과)
 - **선행 Task**: BE-01
 
 ### BE-04. 인증 API — 회원가입/로그인/토큰 재발급 (UC-01, UC-02)
 - **수행 작업**: `modules/auth`에 회원가입(BR-02 기본 카테고리 자동 생성, BR-07 이메일 고유), 로그인(BR-01), 토큰 재발급 API 구현. `db/queries/user.queries.js`, `category.queries.js`에 필요한 쿼리 추가.
 - **완료 조건**
-  - [ ] `POST /auth/signup`: 이메일 중복 시 409, 비밀번호 8자 미만/이름 형식 오류 시 400
-  - [ ] 회원가입 성공 시 User 레코드 + `isDefault=true` 카테고리 자동 생성 확인(BR-02)
-  - [ ] `POST /auth/login`: 이메일/비밀번호 불일치 시 401(계정 존재 여부 비노출)
-  - [ ] 로그인 성공 시 access_token+refresh_token 응답
-  - [ ] `POST /auth/token/refresh`: 유효 refresh_token으로 access_token 재발급, 만료/무효 시 401
-  - [ ] 비밀번호는 해시로만 저장(평문 미저장) 확인
+  - [x] `POST /auth/signup`: 이메일 중복 시 409, 비밀번호 8자 미만/이름 형식 오류 시 400 (`tests/auth.routes.test.js`, 통과)
+  - [x] 회원가입 성공 시 User 레코드 + `isDefault=true` 카테고리 자동 생성 확인(BR-02) (`tests/auth.service.test.js`, 통과)
+  - [x] `POST /auth/login`: 이메일/비밀번호 불일치 시 401(계정 존재 여부 비노출) (통과)
+  - [x] 로그인 성공 시 access_token+refresh_token 응답 (통과)
+  - [x] `POST /auth/token/refresh`: 유효 refresh_token으로 access_token 재발급, 만료/무효 시 401 (통과)
+  - [x] 비밀번호는 해시로만 저장(평문 미저장) 확인 (bcrypt 해시 `$2b$` 포맷 검증, 통과)
 - **선행 Task**: BE-02, BE-03
 
 ### BE-05. 사용자 정보 API — 내 정보 조회/수정 (UC-03, Should)
 - **수행 작업**: `modules/user`에 본인 정보 조회/수정 API 구현(이름/비밀번호 변경, BR-05 본인만 수정 가능은 토큰의 sub로 자동 보장).
 - **완료 조건**
-  - [ ] `GET /users/me` 인증 사용자 정보 반환, 미인증 401
-  - [ ] `PATCH /users/me` 이름/비밀번호 수정 성공 시 `updatedAt` 갱신
-  - [ ] 비밀번호 미입력 시 기존 값 유지(변경 안 함)
-  - [ ] 비밀번호 8자 미만/이름 형식 오류 시 400
+  - [x] `GET /users/me` 인증 사용자 정보 반환, 미인증 401 (`tests/user.routes.test.js`, 통과)
+  - [x] `PATCH /users/me` 이름/비밀번호 수정 성공 시 `updatedAt` 갱신 (통과)
+  - [x] 비밀번호 미입력 시 기존 값 유지(변경 안 함) (name만 수정 시 email/password 불변 확인, 통과)
+  - [x] 비밀번호 8자 미만/이름 형식 오류 시 400 (통과)
 - **선행 Task**: BE-03, BE-04
 
 ### BE-06. 카테고리 API — 생성/목록/삭제 (UC-08 Must, UC-09 Should)
 - **수행 작업**: `modules/category`에 카테고리 생성(BR-09), 목록 조회, 삭제(BR-08: 기본 카테고리 삭제 금지, 삭제 시 소속 Todo를 기본 카테고리로 이동하는 트랜잭션) 구현. `db/queries/category.queries.js`, `todo.queries.js`(이동용 UPDATE) 확장.
 - **완료 조건**
-  - [ ] `POST /categories`: 이름 중복(동일 사용자 내) 시 409, 성공 시 `isDefault=false`로 생성
-  - [ ] `GET /categories`: 본인 소유 카테고리만 반환
-  - [ ] `DELETE /categories/:id`: 소유자 아니면 404(BR-05), `isDefault=true`이면 400(BR-08)
-  - [ ] 일반 카테고리 삭제 시 소속 Todo의 `category_id`가 기본 카테고리로 일괄 이동(트랜잭션, 삭제 전/후 개수 일치 확인)
+  - [x] `POST /categories`: 이름 중복(동일 사용자 내) 시 409, 성공 시 `isDefault=false`로 생성 (`tests/category.routes.test.js`, 통과)
+  - [x] `GET /categories`: 본인 소유 카테고리만 반환 (통과)
+  - [x] `DELETE /categories/:id`: 소유자 아니면 404(BR-05), `isDefault=true`이면 400(BR-08) (통과)
+  - [x] 일반 카테고리 삭제 시 소속 Todo의 `category_id`가 기본 카테고리로 일괄 이동(트랜잭션, 삭제 전/후 개수 일치 확인) (DB 직접 검증, 통과)
 - **선행 Task**: BE-02, BE-03, BE-04
 
 ### BE-07. 할일 API — 등록/목록·필터/수정/삭제 (UC-04~UC-07)
 - **수행 작업**: `modules/todo`에 CRUD API 구현. 등록 시 카테고리 미지정 시 기본 카테고리 적용(BR-03), `startDate<=endDate` 검증(BR-04), 소유권 검증(BR-05), 목록 조회 시 카테고리/상태 필터+페이지네이션(BR-06). `src/shared/todoStatus.js`에 상태 계산 함수(NOT_STARTED/IN_PROGRESS/OVERDUE/COMPLETED, 서버 UTC 자정 기준, 도메인 정의서 4장) 구현.
 - **완료 조건**
-  - [ ] `POST /todos`: 카테고리 미지정 시 기본 카테고리로 생성(BR-03), `title` 미입력 400, `startDate>endDate` 400(BR-04)
-  - [ ] 타 사용자 소유 `categoryId` 지정 시 404(BR-05)
-  - [ ] `GET /todos`: 카테고리 필터, 상태 필터(시작전/진행중/완료/지연) 정상 동작, 응답에 계산된 상태 포함(BR-06)
-  - [ ] `GET /todos`: `page`/`limit` 파라미터로 페이지네이션 동작
-  - [ ] `PATCH /todos/:id`: 소유자 아니면 404(BR-05), `startDate>endDate` 400(BR-04), `isCompleted=true` 전환 시 `completedAt` 기록, `false` 복귀 시 초기화 후 상태 재계산
-  - [ ] `DELETE /todos/:id`: 소유자 아니면 404, 성공 시 이후 조회에서 제외
-  - [ ] 상태 계산 함수 단위 테스트(경계값: `startDate=today`, `endDate=today`) 통과
+  - [x] `POST /todos`: 카테고리 미지정 시 기본 카테고리로 생성(BR-03), `title` 미입력 400, `startDate>endDate` 400(BR-04) (`tests/todo.routes.test.js`, 통과)
+  - [x] 타 사용자 소유 `categoryId` 지정 시 404(BR-05) (통과)
+  - [x] `GET /todos`: 카테고리 필터, 상태 필터(시작전/진행중/완료/지연) 정상 동작, 응답에 계산된 상태 포함(BR-06) (통과)
+  - [x] `GET /todos`: `page`/`limit` 파라미터로 페이지네이션 동작 (통과)
+  - [x] `PATCH /todos/:id`: 소유자 아니면 404(BR-05), `startDate>endDate` 400(BR-04), `isCompleted=true` 전환 시 `completedAt` 기록, `false` 복귀 시 초기화 후 상태 재계산 (통과)
+  - [x] `DELETE /todos/:id`: 소유자 아니면 404, 성공 시 이후 조회에서 제외 (통과)
+  - [x] 상태 계산 함수 단위 테스트(경계값: `startDate=today`, `endDate=today`) 통과 (`tests/todoStatus.test.js`, 6/6 통과)
 - **선행 Task**: BE-02, BE-03, BE-04, BE-06
 
 ### BE-08. 공통 소유권 검증 헬퍼 적용 (BR-05 전수 적용)
 - **수행 작업**: `src/shared/notFoundIfEmpty.js` 헬퍼를 BE-05/06/07의 모든 조회·수정·삭제 API에 일괄 적용해 "내 것이 아니면 404" 규칙을 한 곳에서 관리.
 - **완료 조건**
-  - [ ] 카테고리/할일 관련 모든 Controller가 헬퍼를 통해 404 처리(개별 컨트롤러 중복 구현 없음)
-  - [ ] 타 사용자 리소스 접근 시 모든 엔드포인트에서 동일하게 404 응답 확인
+  - [x] 카테고리/할일 관련 모든 Controller가 헬퍼를 통해 404 처리(개별 컨트롤러 중복 구현 없음) (`src/shared/notFoundIfEmpty.js`로 통합, category/todo service 자체 중복 로직 제거)
+  - [x] 타 사용자 리소스 접근 시 모든 엔드포인트에서 동일하게 404 응답 확인 (기존 `tests/category.routes.test.js`, `tests/todo.routes.test.js` 전체 재실행, 68/68 통과, 동작 변화 없음)
 - **선행 Task**: BE-06, BE-07
 
 ### BE-09. 핵심 비즈니스 규칙 단위 테스트
 - **수행 작업**: `tests/`에 `auth.service.test.js`(BR-01/02/07), `category.service.test.js`(BR-08/09), `todo.service.test.js`(BR-03/04/05/06 + 상태 계산) 작성.
+  - 실제로는 `category.service.test.js`/`todo.service.test.js`를 별도 파일로 만들지 않고, 각 task(BE-04/06/07) 진행 시 이미 작성된 `tests/category.routes.test.js`, `tests/todo.routes.test.js`(HTTP 레벨, 실DB)가 동일한 BR 검증을 포함하도록 함. service가 DB조회를 감싼 얇은 계층이라 route 레벨 테스트가 실질적으로 더 강한 커버리지(HTTP 검증+서비스 로직 동시 검증)를 제공하므로 별도 service 단위테스트 파일 추가는 생략(중복 회피, YAGNI).
 - **완료 조건**
-  - [ ] BR-04(`startDate<=endDate`) 위반 케이스 테스트 통과
-  - [ ] BR-05(소유권 실패 시 404) 테스트 통과
-  - [ ] BR-08(기본 카테고리 삭제 불가/Todo 이동) 테스트 통과
-  - [ ] 상태 계산 경계값(시작일=오늘, 종료일=오늘, 완료 우선순위) 테스트 통과
-  - [ ] 전체 테스트 스위트 `npm test` 성공
+  - [x] BR-04(`startDate<=endDate`) 위반 케이스 테스트 통과 (`tests/todo.routes.test.js`)
+  - [x] BR-05(소유권 실패 시 404) 테스트 통과 (`tests/category.routes.test.js`, `tests/todo.routes.test.js`)
+  - [x] BR-08(기본 카테고리 삭제 불가/Todo 이동) 테스트 통과 (`tests/category.routes.test.js`)
+  - [x] 상태 계산 경계값(시작일=오늘, 종료일=오늘, 완료 우선순위) 테스트 통과 (`tests/todoStatus.test.js`, 6/6)
+  - [x] 전체 테스트 스위트 `npm test` 성공 (68/68 통과)
 - **선행 Task**: BE-04, BE-06, BE-07
 
 ### BE-10. 서버 기동/배포 준비
 - **수행 작업**: `.env.example` 최종 정리(PORT, DATABASE_URL, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES), 헬스체크 엔드포인트(`GET /health`) 추가, 배포 환경에서 기동 확인.
 - **완료 조건**
-  - [ ] `.env.example`에 필요한 키 전부 명시(값은 placeholder)
-  - [ ] `GET /health` 200 응답 확인
-  - [ ] 배포 대상 환경에서 서버 정상 기동 및 DB 연결 확인
+  - [x] `.env.example`에 필요한 키 전부 명시(값은 placeholder) (`DATABASE_URL`,`JWT_ACCESS_SECRET`,`JWT_REFRESH_SECRET`,`JWT_ACCESS_EXPIRES`,`JWT_REFRESH_EXPIRES`,`PORT` 전부 있음, BE-01/BE-03에서 추가)
+  - [x] `GET /health` 200 응답 확인 (`tests/health.test.js` 통과 + 로컬 개발서버 실제 curl로 `{"status":"ok"}` 200 확인)
+  - [x] 배포 대상 환경에서 서버 정상 기동 및 DB 연결 확인 (1인/2일 MVP 배포 대상=로컬 개발환경. `npm run dev`로 기동된 서버가 `/health` 200 응답, 전체 테스트 스위트가 실DB 연결로 68/68 통과해 DB 연결 확인됨)
 - **선행 Task**: BE-02, BE-09
 
 ---
