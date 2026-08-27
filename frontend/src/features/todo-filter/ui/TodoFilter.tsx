@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useCategories } from '../../../entities/category/model/useCategories';
 import { useFilterStore } from '../model/filterStore';
 import type { TodoStatus } from '../../../entities/todo/model/todo.types';
@@ -23,46 +22,19 @@ export default function TodoFilter() {
 
   return (
     <div className="todo-filter">
-      <div className="todo-filter__desktop">
-        <div className="todo-filter__categories" role="radiogroup" aria-label="카테고리 필터">
-          <label>
-            <input
-              type="radio"
-              name="category"
-              checked={categoryId === undefined}
-              onChange={() => setCategoryId(undefined)}
-            />
-            전체
-          </label>
-          {list.map((c) => (
-            <label key={c.id}>
-              <input
-                type="radio"
-                name="category"
-                checked={categoryId === c.id}
-                onChange={() => setCategoryId(c.id)}
-              />
-              {c.name}
-            </label>
-          ))}
-        </div>
-        <Link to="/categories" className="todo-filter__manage-link">
-          카테고리 관리 &gt;
-        </Link>
-        <div className="todo-filter__status-tabs" role="tablist" aria-label="상태 필터">
-          {STATUS_TABS.map((tab) => (
-            <button
-              key={tab.label}
-              type="button"
-              role="tab"
-              aria-selected={status === tab.value}
-              className={status === tab.value ? 'is-active' : ''}
-              onClick={() => setStatus(tab.value)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+      <div className="todo-filter__desktop todo-filter__status-tabs" role="tablist" aria-label="상태 필터">
+        {STATUS_TABS.map((tab) => (
+          <button
+            key={tab.label}
+            type="button"
+            role="tab"
+            aria-selected={status === tab.value}
+            className={status === tab.value ? 'is-active' : ''}
+            onClick={() => setStatus(tab.value)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <div className="todo-filter__mobile">

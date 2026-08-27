@@ -4,6 +4,7 @@ import type { Todo } from '../model/todo.types';
 import TodoStatusBadge from './TodoStatusBadge';
 import { useDeleteTodo } from '../../../features/todo-crud/model/useTodoMutations';
 import ConfirmModal from '../../../shared/ui/ConfirmModal';
+import { TODO_STATUS_META } from '../../../shared/lib/todoStatus';
 import './todo-card.css';
 
 interface TodoCardProps {
@@ -14,9 +15,10 @@ interface TodoCardProps {
 export default function TodoCard({ todo, categoryName }: TodoCardProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const deleteTodo = useDeleteTodo();
+  const accentColor = TODO_STATUS_META[todo.status].text;
 
   return (
-    <div className="todo-card">
+    <div className="todo-card" style={{ borderLeftColor: accentColor }}>
       <div className="todo-card__header">
         <h3
           className="todo-card__title"

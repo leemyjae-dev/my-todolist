@@ -8,8 +8,8 @@ export interface TodoStatusMeta {
 }
 
 export const TODO_STATUS_META: Record<TodoStatus, TodoStatusMeta> = {
-  NOT_STARTED: { label: '시작전', icon: '○', bg: '#EDEFF3', text: '#5B6472' },
-  IN_PROGRESS: { label: '진행중', icon: '◐', bg: '#E8F0FE', text: '#0B5CD7' },
-  OVERDUE: { label: '지연', icon: '!', bg: '#FCEAEA', text: '#D93A3A' },
-  COMPLETED: { label: '완료', icon: '●', bg: '#E6F6EC', text: '#1F9254' },
+  NOT_STARTED: { label: '시작전', icon: '○', bg: 'var(--status-notstarted-bg)', text: 'var(--status-notstarted-text)' },
+  IN_PROGRESS: { label: '진행중', icon: '◐', bg: 'var(--status-inprogress-bg)', text: 'var(--status-inprogress-text)' },
+  OVERDUE: { label: '지연', icon: '!', bg: 'var(--status-overdue-bg)', text: 'var(--status-overdue-text)' },
+  COMPLETED: { label: '완료', icon: '●', bg: 'var(--status-completed-bg)', text: 'var(--status-completed-text)' },
 };

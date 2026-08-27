@@ -1,5 +1,7 @@
 :root {
   --color-primary: #0B5CD7;
+  --color-primary-hover: #0947AD;
+  --color-primary-light: #E8F0FE;
   --color-danger: #D93A3A;
   --color-border: #DDE2EA;
   --color-surface: #FFFFFF;
@@ -21,4 +23,37 @@
   --space-8: 48px;
 
   --font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+
+  --status-notstarted-bg: #EDEFF3;
+  --status-notstarted-text: #5B6472;
+  --status-inprogress-bg: #E8F0FE;
+  --status-inprogress-text: #0B5CD7;
+  --status-overdue-bg: #FCEAEA;
+  --status-overdue-text: #D93A3A;
+  --status-completed-bg: #E6F6EC;
+  --status-completed-text: #1F9254;
+}
+
+:root[data-theme='dark'] {
+  --color-primary: #4C9CF0;
+  --color-primary-hover: #6FB1F5;
+  --color-primary-light: rgba(76, 156, 240, 0.16);
+  --color-danger: #F0665F;
+  --color-border: #2B3242;
+  --color-surface: #171B27;
+  --color-bg: #0E1219;
+  --color-text: #E7EAF0;
+  --color-text-secondary: #9AA3B5;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 8px 24px rgba(0, 0, 0, 0.55);
+
+  --status-notstarted-bg: #232838;
+  --status-notstarted-text: #9AA3B5;
+  --status-inprogress-bg: rgba(76, 156, 240, 0.18);
+  --status-inprogress-text: #6FB1F5;
+  --status-overdue-bg: rgba(240, 102, 95, 0.18);
+  --status-overdue-text: #F0918C;
+  --status-completed-bg: rgba(46, 176, 106, 0.18);
+  --status-completed-text: #5FD08C;
 }
