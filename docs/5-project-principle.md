@@ -6,6 +6,7 @@
 |---|---|---|
 | 0.1 | 2026-08-26 | 최초 작성 (도메인 정의서 v0.3, PRD v0.3 기반) |
 | 0.2 | 2026-08-26 | 프론트엔드 디렉토리 구조를 FSD(Feature-Sliced Design) 패턴으로 변경 |
+| 0.3 | 2026-08-27 | BE-01~BE-10 실제 구현 결과에 맞춰 정정: env var 목록에 `NODE_ENV`,`CORS_ORIGIN` 추가, 백엔드 트리에 `middlewares/cors.js` 추가·`migrations/` 미사용 명시, `tests/` 목록을 실제 라우트 테스트 파일명으로 수정, swagger-ui-express를 신규 의존성 최소화 원칙의 예외로 명시 |
 
 ## 0. 문서 목적
 
@@ -78,7 +79,7 @@
 
 ## 5. 설정/보안/운영 원칙
 
-- **환경변수**: `.env`(로컬, `.gitignore` 처리) + `.env.example`(키 목록만 공유)로 관리. 최소 항목: `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES`(예: 15m), `JWT_REFRESH_EXPIRES`(예: 7d), `PORT`.
+- **환경변수**: `.env`(로컬, `.gitignore` 처리) + `.env.example`(키 목록만 공유)로 관리. 최소 항목: `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES`(예: 15m), `JWT_REFRESH_EXPIRES`(예: 7d), `PORT`, `NODE_ENV`(development/production, 개발용 도구 활성화 여부 판단에 사용), `CORS_ORIGIN`(프론트엔드 개발 서버 origin, 콤마로 다중 지정 가능).
 - **JWT**: access/refresh 시크릿은 서로 다른 값 사용, 코드에 하드코딩 금지. 토큰 발급/검증 로직은 `auth/` 또는 `middlewares/auth.js` 한 곳에만 둔다.
 - **DB 커넥션 풀**: `pg.Pool`을 앱 시작 시 1회 생성해 싱글턴으로 재사용(`db/pool.js`). PRD 기준 `max: 10~20`. 요청마다 새 Pool/Client를 만들지 않는다.
 - **SQL Injection 방지**: 모든 쿼리는 `$1, $2...` 파라미터 바인딩만 사용. 문자열 템플릿으로 값 조합 금지(Query 계층 코드 리뷰 시 필수 체크 항목).
@@ -188,18 +189,18 @@ backend/
 │   │   └── notFoundIfEmpty.js   # BR-05 공통 404 처리 헬퍼
 │   ├── middlewares/
 │   │   ├── auth.js              # JWT 검증 (access_token)
-│   │   └── errorHandler.js      # 공통 에러 응답 포맷
-│   └── migrations/              # SQL 마이그레이션 파일 (schema 생성/변경 이력)
-│       ├── 001_create_users.sql
-│       ├── 002_create_categories.sql
-│       └── 003_create_todos.sql
-├── tests/
-│   ├── todo.service.test.js     # BR-04, BR-06, 상태 계산 검증
-│   ├── category.service.test.js # BR-08, BR-09 검증
-│   └── auth.service.test.js     # BR-01, BR-02, BR-07 검증
+│   │   ├── errorHandler.js      # 공통 에러 응답 포맷
+│   │   └── cors.js              # CORS_ORIGIN 기반 오리진 허용 미들웨어
+│   └── migrations/              # (미사용) 스키마는 docs/schema.sql을 DB에 직접 적용해 관리, 별도 마이그레이션 파일 없음
+├── tests/                       # BR 검증은 서비스 단위 테스트 대신 HTTP 레벨 라우트 테스트로 수행(실DB 사용)
+│   ├── auth.routes.test.js      # BR-01, BR-02, BR-07 검증
+│   ├── category.routes.test.js  # BR-08, BR-09 검증
+│   └── todo.routes.test.js      # BR-03, BR-04, BR-05, BR-06 + 상태 계산 검증
 ├── .env.example
 └── package.json
 ```
+
+- 개발 편의용 `GET /api-docs`(swagger-ui-express, `NODE_ENV !== 'production'`일 때만 활성화)는 위 트리에 별도 표기하지 않는다 — `app.js`에서 조건부로 마운트되는 개발 전용 기능이며, `swagger-ui-express`는 "신규 의존성 최소화" 원칙의 예외로 둔다(런타임 프로덕션 코드가 아닌 개발 도구).
 
 - `db/queries/*.js`는 오직 SQL 실행과 결과 매핑(snake_case↔camelCase)만 담당하며 비즈니스 규칙 판단을 포함하지 않는다.
 - `modules/*/**.service.js`가 유일하게 BR 규칙을 검증하는 위치이며, Controller/Route/Query는 규칙 판단 로직을 갖지 않는다.
