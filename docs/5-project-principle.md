@@ -7,6 +7,7 @@
 | 0.1 | 2026-08-26 | 최초 작성 (도메인 정의서 v0.3, PRD v0.3 기반) |
 | 0.2 | 2026-08-26 | 프론트엔드 디렉토리 구조를 FSD(Feature-Sliced Design) 패턴으로 변경 |
 | 0.3 | 2026-08-27 | BE-01~BE-10 실제 구현 결과에 맞춰 정정: env var 목록에 `NODE_ENV`,`CORS_ORIGIN` 추가, 백엔드 트리에 `middlewares/cors.js` 추가·`migrations/` 미사용 명시, `tests/` 목록을 실제 라우트 테스트 파일명으로 수정, swagger-ui-express를 신규 의존성 최소화 원칙의 예외로 명시 |
+| 0.4 | 2026-08-27 | MVP 이후 추가된 다크모드/다국어 구현 결과 반영: 프론트엔드 트리에 `features/theme/`, `shared/lib/theme.ts`, `shared/lib/locale.ts`, `shared/lib/i18n/`, `shared/api/parseErrorOrThrow.ts`, `shared/ui/ThemeToggle.tsx`, `shared/ui/LocaleSwitcher.tsx` 추가 |
 
 ## 0. 문서 목적
 
@@ -143,10 +144,20 @@ frontend/
 │   │       ├── model/todo.types.ts      # Todo, Status 타입 (도메인 정의서 3.3, 4장 매핑)
 │   │       ├── model/useTodos.ts        # TanStack Query 훅 (목록/단건 조회)
 │   │       └── api/todoApi.ts           # fetch 함수 (CRUD)
+│   ├── features/                    # (계속) MVP 이후 추가
+│   │   └── theme/
+│   │       └── model/themeStore.ts      # Zustand: 라이트/다크 테마 선택 상태
 │   └── shared/                      # 도메인과 무관한 공통 코드
 │       ├── ui/ConfirmModal.tsx      # 범용 확인 모달 (category-crud 삭제 등에도 재사용)
+│       ├── ui/ThemeToggle.tsx       # 다크모드 토글 버튼
+│       ├── ui/LocaleSwitcher.tsx    # 언어 선택 드롭다운 (En/Ko/Ja)
 │       ├── api/apiClient.ts         # fetch 래퍼: Authorization 헤더, 401 시 토큰 갱신
-│       └── lib/todoStatus.ts        # 상태(Status) 계산 상수/함수 (4장 규칙, 백엔드와 동일 로직)
+│       ├── api/parseErrorOrThrow.ts # 서버 error.code → 번역 메시지 매핑 (공용, 4곳 중복 파서 통합)
+│       ├── lib/todoStatus.ts        # 상태(Status) 계산 상수/함수 (4장 규칙, 백엔드와 동일 로직)
+│       ├── lib/theme.ts             # 테마 적용/초기값 판별 (localStorage + prefers-color-scheme)
+│       ├── lib/locale.ts            # 로케일 적용/초기값 판별 (localStorage + navigator.language)
+│       └── lib/i18n/                # 다국어: locales/{ko,en,ja}.ts, translate.ts, localeStore.ts, useT.ts
+│                                     # localeStore는 features가 아닌 shared에 둠(shared/api가 store를 참조해야 해서 FSD 역방향 참조를 피함)
 ├── .env.example
 └── package.json
 ```

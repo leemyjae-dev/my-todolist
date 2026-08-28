@@ -5,6 +5,7 @@
 | 버전 | 날짜 | 변경 내용 |
 |---|---|---|
 | 0.1 | 2026-08-26 | 최초 작성 (docs/1~7, schema.sql 기반) |
+| 0.2 | 2026-08-27 | MVP(DB/BE/FE) 완료 후 진행한 Could 항목 및 추가 기능(4장) 반영: 다크모드, En/Ko/Ja 다국어(i18n), 메인화면 리디자인 |
 
 ## 0. 개요
 
@@ -244,3 +245,32 @@
   - 모바일(375px)에서 헤더의 "my-todoList" 타이틀과 "내 정보" 링크 사이 간격이 없어 붙어보임 → `todo-list-page.css`에 `flex-wrap`+모바일 폰트크기 조정 추가
   - `index.html`의 `<title>`이 FE-01 임시 스캐폴딩 폴더명("frontend-tmp") 그대로 남아있었음 → "my-todoList"로 수정, `lang="en"`→`"ko"`
 - **선행 Task**: FE-03, FE-05, FE-06, FE-07, FE-08, FE-09
+
+---
+
+## 4. MVP 이후 추가 기능 (Could 항목 + 범위 외 추가)
+
+### FE-11. 메인화면 리디자인 (Claude Design 3안 중 "Clean Sidebar" 채택)
+- **수행 작업**: `/design` 캔버스로 메인 할일목록 화면 시안 3종 초안 제작 후, "Clean Sidebar" 방향을 실제 React/CSS로 적용.
+- **완료 조건**
+  - [x] 좌측 카테고리 사이드바 + 우측 목록 레이아웃 실제 코드 반영
+  - [x] 기존 반응형(데스크톱/모바일) 동작 유지 확인
+- **선행 Task**: FE-10
+
+### FE-12. 다크모드 (PRD Could 항목)
+- **수행 작업**: `shared/lib/theme.ts`(`Theme='light'|'dark'`, `getInitialTheme()`/`applyTheme()`, `localStorage` 키 `mtl_theme` + `prefers-color-scheme` 감지), `features/theme/model/themeStore.ts`(Zustand), `app/styles/tokens.css`에 `:root[data-theme='dark']` 오버라이드 블록(할일 상태 4색 포함), `shared/ui/ThemeToggle.tsx` 헤더 토글 버튼.
+- **완료 조건**
+  - [x] 토글 클릭 시 라이트/다크 즉시 전환, 새로고침 후에도 선택값 유지(`localStorage`)
+  - [x] OS `prefers-color-scheme`에 따른 최초 진입 시 기본값 결정
+  - [x] 할일 상태 4색 배지 등 주요 색상 토큰이 다크 모드에서도 대비 유지
+- **선행 Task**: FE-10
+
+### FE-13. 다국어 지원 (En/Ko/Ja i18n, PRD 범위 외 추가)
+- **수행 작업**: 다크모드와 동일 패턴(유틸+Zustand 스토어+토글 UI)으로 3개 언어 지원 구현. `shared/lib/locale.ts`, `shared/lib/i18n/locales/{ko,en,ja}.ts`(`ko.ts`가 기준, `en.ts`/`ja.ts`는 `Dictionary = typeof ko` 타입으로 컴파일 타임에 누락 키 검출), `shared/lib/i18n/translate.ts`(dot-path 평탄화 + `{{param}}` 보간), `shared/lib/i18n/localeStore.ts`(FSD 계층 위반 방지를 위해 `features/`가 아닌 `shared/lib/i18n/`에 배치), `shared/lib/i18n/useT.ts`, `shared/ui/LocaleSwitcher.tsx`. 서버 에러는 `shared/api/parseErrorOrThrow.ts`가 `error.code` 기준으로 번역(4곳에 중복돼 있던 로컬 파서 통합).
+- **완료 조건**
+  - [x] 헤더 언어 선택기로 한국어/English/日本語 즉시 전환, `localStorage`(`mtl_locale`) 유지
+  - [x] 전 화면(인증/할일/카테고리/프로필) 하드코딩 한글 문자열 전량 치환, `tsc -b --noEmit` 클린
+  - [x] 서버 에러 메시지도 `code` 매핑으로 번역(미매핑 코드는 서버 원문 메시지로 폴백)
+  - [x] 사용자 생성 콘텐츠(할일 제목, 카테고리 이름 등)는 번역 대상에서 제외됨을 Playwright로 확인
+  - [x] Vitest 전체 스위트 통과(96/96)
+- **선행 Task**: FE-10
