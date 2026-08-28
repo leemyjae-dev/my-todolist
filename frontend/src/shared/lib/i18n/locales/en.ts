@@ -111,6 +111,13 @@ export const en: Dictionary = {
     switchToDark: 'Switch to dark mode',
     switchToLight: 'Switch to light mode',
   },
+  app: {
+    errorBoundary: {
+      title: 'Something went wrong',
+      description: 'An error occurred while displaying this page. Please try again.',
+      retry: 'Retry',
+    },
+  },
   locale: {
     label: 'Language',
   },

@@ -109,6 +109,13 @@ export const ko = {
     switchToDark: '다크 모드로 전환',
     switchToLight: '라이트 모드로 전환',
   },
+  app: {
+    errorBoundary: {
+      title: '문제가 발생했습니다',
+      description: '페이지를 표시하는 중 오류가 발생했습니다. 다시 시도해주세요.',
+      retry: '다시 시도',
+    },
+  },
   locale: {
     label: '언어',
   },

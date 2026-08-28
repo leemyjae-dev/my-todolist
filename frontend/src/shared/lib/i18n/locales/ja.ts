@@ -111,6 +111,13 @@ export const ja: Dictionary = {
     switchToDark: 'ダークモードに切り替え',
     switchToLight: 'ライトモードに切り替え',
   },
+  app: {
+    errorBoundary: {
+      title: '問題が発生しました',
+      description: 'ページの表示中にエラーが発生しました。もう一度お試しください。',
+      retry: '再試行',
+    },
+  },
   locale: {
     label: '言語',
   },

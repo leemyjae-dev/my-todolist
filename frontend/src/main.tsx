@@ -5,12 +5,15 @@ import './app/styles/tokens.css'
 import { applyTheme, getInitialTheme } from './shared/lib/theme'
 import { applyLocale, getInitialLocale } from './shared/lib/locale'
 import App from './App.tsx'
+import ErrorBoundary from './app/ErrorBoundary.tsx'
 
 applyTheme(getInitialTheme())
 applyLocale(getInitialLocale())
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 )
